@@ -1,0 +1,80 @@
+/* base.css — reset, CSS variables, body, font */
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #f0f2f8;
+  --surface: #ffffff;
+  --surface2: #e8ecf5;
+  --border: #d0d8ee;
+  --border2: #b8c4e0;
+  --text: #1e2a4a;
+  --text2: #4a5878;
+  --text3: #8892b0;
+  --accent: #d4a017;
+  --accent-light: #faf3dc;
+  --accent-text: #7a5a08;
+  --green: #2a8a5a;
+  --green-light: #daf0e8;
+  --red: #c44a4a;
+  --red-light: #fae0e0;
+  --blue: #3a5ee8;
+  --blue-light: #dce6fc;
+  --purple: #6a4acc;
+  --purple-light: #ede6fa;
+  --font-serif: 'Geist', sans-serif;
+  --font: 'Geist', sans-serif;
+  --r: 10px;
+  --r-lg: 16px;
+}
+
+.dark {
+  --bg: #0d1117;
+  --surface: #161c2b;
+  --surface2: #1e2640;
+  --border: #2a3550;
+  --border2: #3a4a6a;
+  --text: #ccd6f6;
+  --text2: #8892b0;
+  --text3: #5a6480;
+  --accent: #d4a017;
+  --accent-light: #2a200a;
+  --accent-text: #f0c84a;
+  --green: #4aaa80;
+  --green-light: #0a2018;
+  --red: #d45a5a;
+  --red-light: #2a0e0e;
+  --blue: #5e81f4;
+  --blue-light: #0e1830;
+  --purple: #9a7aee;
+  --purple-light: #1a1038;
+}
+
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 4px;
+  border-radius: 99px;
+  background: var(--surface2);
+  outline: none;
+  width: 100%;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--accent);
+  cursor: pointer;
+}

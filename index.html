@@ -1,0 +1,1002 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Planner</title>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/src/styles/base.css">
+<link rel="stylesheet" href="/src/styles/layout.css">
+<link rel="stylesheet" href="/src/styles/components.css">
+<link rel="stylesheet" href="/src/styles/views.css">
+</head>
+<body>
+
+<div class="shell">
+
+  <!-- Sidebar -->
+  <nav class="sidebar">
+    <div class="sidebar-brand">
+      <h1>Planner</h1>
+      <p id="sidebar-date-label"></p>
+    </div>
+    <div class="sidebar-nav">
+      <div class="nav-label">Views</div>
+      <button class="nav-btn active" data-view="daily" onclick="switchView('daily')">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="18" rx="3"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        <span>Daily</span>
+      </button>
+      <button class="nav-btn" data-view="weekly" onclick="switchView('weekly')">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="18" rx="3"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="3" y1="16" x2="21" y2="16"/></svg>
+        <span>Weekly</span>
+      </button>
+      <button class="nav-btn" data-view="monthly" onclick="switchView('monthly')">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="18" rx="3"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><circle cx="8" cy="15" r="1.5" fill="currentColor"/><circle cx="12" cy="15" r="1.5" fill="currentColor"/><circle cx="16" cy="15" r="1.5" fill="currentColor"/></svg>
+        <span>Monthly</span>
+      </button>
+      <div class="nav-label" style="margin-top: 8px;">Habits</div>
+      <button class="nav-btn" data-view="habits" onclick="switchView('habits')">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 2a10 10 0 1 0 10 10"/><path d="M12 6v6l4 2"/><path d="M18 2v4m2-2h-4"/></svg>
+        <span>Habits</span>
+      </button>
+      <button class="nav-btn" data-view="goals" onclick="switchView('goals')">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/></svg>
+        <span>Goals</span>
+      </button>
+      <button class="nav-btn" data-view="deadlines" onclick="switchView('deadlines')">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><polyline points="12 6 12 12 16 14"/><line x1="3" y1="3" x2="6" y2="6"/><line x1="21" y1="3" x2="18" y2="6"/></svg>
+        <span>Deadlines</span>
+      </button>
+      <button class="nav-btn" data-view="recurring" onclick="switchView('recurring')">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+        <span>Recurring</span>
+      </button>
+      <div class="nav-label" style="margin-top: 8px;">Holidays</div>
+      <button class="nav-btn" data-view="holidays-at" onclick="switchView('holidays-at')">
+        <svg class="nav-icon" viewBox="0 0 24 16" xmlns="http://www.w3.org/2000/svg"><rect width="24" height="16" rx="2" fill="#ED2939"/><rect y="5.3" width="24" height="5.4" fill="white"/></svg>
+        <span>Austria</span>
+      </button>
+      <button class="nav-btn" data-view="holidays-tr" onclick="switchView('holidays-tr')">
+        <svg class="nav-icon" viewBox="0 0 24 16" xmlns="http://www.w3.org/2000/svg"><rect width="24" height="16" rx="2" fill="#E30A17"/><circle cx="9" cy="8" r="3.5" fill="white"/><circle cx="10.5" cy="8" r="2.8" fill="#E30A17"/><polygon points="14,8 15.5,6.5 15.5,9.5" fill="white"/></svg>
+        <span>Turkey</span>
+      </button>
+      <button class="nav-btn" data-view="holidays-us" onclick="switchView('holidays-us')">
+        <svg class="nav-icon" viewBox="0 0 24 16" xmlns="http://www.w3.org/2000/svg"><rect width="24" height="16" rx="2" fill="#B22234"/><rect y="1.2" width="24" height="1.2" fill="white"/><rect y="3.7" width="24" height="1.2" fill="white"/><rect y="6.2" width="24" height="1.2" fill="white"/><rect y="8.6" width="24" height="1.2" fill="white"/><rect y="11.1" width="24" height="1.2" fill="white"/><rect y="13.6" width="24" height="1.2" fill="white"/><rect width="10" height="8.6" rx="2 0 0 0" fill="#3C3B6E"/></svg>
+        <span>United States</span>
+      </button>
+      <div class="nav-label" style="margin-top: 8px;">Events</div>
+      <button class="nav-btn" data-view="events-birthdays" onclick="switchView('events-birthdays')">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 2a2 2 0 0 1 2 2c0 1.5-2 3-2 3s-2-1.5-2-3a2 2 0 0 1 2-2z"/><rect x="3" y="7" width="18" height="14" rx="2"/><line x1="3" y1="11" x2="21" y2="11"/><line x1="8" y1="7" x2="8" y2="21"/><line x1="16" y1="7" x2="16" y2="21"/></svg>
+        <span>Birthdays</span>
+      </button>
+      <button class="nav-btn" data-view="events-anniversaries" onclick="switchView('events-anniversaries')">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        <span>Anniversaries</span>
+      </button>
+      <button class="nav-btn" data-view="events-historical" onclick="switchView('events-historical')">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        <span>Historical</span>
+      </button>
+      <div class="nav-label" style="margin-top: 8px;">Travel</div>
+      <button class="nav-btn" data-view="travel" onclick="switchView('travel')">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        <span>Trips</span>
+      </button>
+      <div class="nav-label" style="margin-top: 8px;">Settings</div>
+      <button class="nav-btn" data-view="settings" onclick="switchView('settings')">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        <span>Settings</span>
+      </button>
+      <button class="nav-btn" onclick="openCategoryModal()">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="9" cy="5" r="2"/><circle cx="9" cy="12" r="2"/><circle cx="9" cy="19" r="2"/><line x1="13" y1="5" x2="20" y2="5"/><line x1="13" y1="12" x2="20" y2="12"/><line x1="13" y1="19" x2="20" y2="19"/></svg>
+        <span>Categories</span>
+      </button>
+      <button class="nav-btn" onclick="exportData()">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        <span>Export data</span>
+      </button>
+      <button class="nav-btn" onclick="document.getElementById('import-file').click()">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        <span>Import data</span>
+      </button>
+      <button class="nav-btn" onclick="openGitHubSync()">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+        <span>GitHub sync</span>
+      </button>
+      <input type="file" id="import-file" accept=".json" class="hidden" onchange="importData(event)" />
+    </div>
+    <div class="sidebar-footer">
+      <div class="date-display">
+        <strong id="footer-day"></strong>
+        <span id="footer-date"></span>
+      </div>
+      <button class="theme-toggle" onclick="toggleTheme()" id="theme-toggle-btn">
+        <span class="theme-toggle-icon" id="theme-icon">☀️</span>
+        <span id="theme-label">Light mode</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Main -->
+  <main class="main">
+
+    <!-- ====== DAILY VIEW ====== -->
+    <div id="view-daily" class="view active">
+
+      <!-- Time progress banner -->
+      <div class="time-banner" id="time-banner"></div>
+
+      <div class="view-header">
+        <div>
+          <div class="view-title" id="daily-dow"></div>
+          <div style="display:flex;align-items:center;gap:10px;margin-top:4px;">
+            <div class="view-subtitle" id="daily-subtitle"></div>
+            <span id="daily-day-type" style="font-size:12px;font-weight:500;padding:2px 10px;border-radius:99px;"></span>
+          </div>
+          <!-- World clock -->
+          <div id="world-clock" style="display:flex;gap:16px;margin-top:10px;flex-wrap:wrap;"></div>
+        </div>
+        <div class="date-nav">
+          <button onclick="shiftDay(-1)">&#8249;</button>
+          <div class="curr-label" id="daily-nav-label"></div>
+          <button onclick="shiftDay(1)">&#8250;</button>
+          <button onclick="goToday()" style="font-size:12px;">Today</button>
+        </div>
+      </div>
+
+      <!-- Stats -->
+      <div class="stats-row" id="daily-stats"></div>
+
+      <!-- Two-column: Time + Tasks -->
+      <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px; align-items: stretch;">
+
+        <!-- Time Schedule -->
+        <div style="display:flex; flex-direction:column; min-height:100%;">
+          <div class="card" style="flex:1; display:flex; flex-direction:column; min-height:0;">
+            <div class="flex-between" style="margin-bottom:14px; flex-shrink:0;">
+              <div class="card-title" style="margin-bottom:0;">Schedule</div>
+              <button class="btn btn-sm btn-primary" onclick="openTimeModal()">+ Add event</button>
+            </div>
+            <div id="time-grid" style="overflow-y:auto;"></div>
+          </div>
+        </div>
+
+        <!-- Tasks + Goals mini -->
+        <div class="grid-right-col" style="display:flex; flex-direction:column; gap:0;">
+          <div class="card">
+            <div class="flex-between" style="margin-bottom:14px;">
+              <div class="card-title" style="margin-bottom:0;">Tasks</div>
+              <button class="btn btn-sm btn-primary" onclick="openTaskModal('daily')">+ Add task</button>
+            </div>
+            <div id="daily-tasks-list"></div>
+          </div>
+
+          <!-- Upcoming deadlines -->
+          <div class="card" id="daily-deadlines-card">
+            <div class="flex-between" style="margin-bottom:12px;">
+              <div class="card-title" style="margin-bottom:0;">Upcoming deadlines</div>
+              <button class="btn btn-sm" onclick="switchView('deadlines')" style="font-size:11px;">View all →</button>
+            </div>
+            <div id="daily-deadlines-list"></div>
+          </div>
+
+          <!-- Water tracking -->
+          <div class="card" id="water-card">
+            <div class="card-title">Water intake</div>
+            <div id="water-widget"></div>
+          </div>
+
+          <!-- Gym progress -->
+          <div class="card" id="gym-card">
+            <div class="card-title">Gym progress</div>
+            <div id="gym-widget"></div>
+          </div>
+
+          <!-- Cheat day -->
+          <div class="card" id="cheat-card">
+            <div class="card-title">Cheat day</div>
+            <div id="cheat-widget"></div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- ====== DEADLINES VIEW ====== -->
+    <div id="view-deadlines" class="view">
+      <div class="view-header">
+        <div>
+          <div class="view-title">Deadlines</div>
+          <div class="view-subtitle">Track what's due and when</div>
+        </div>
+        <button class="btn btn-primary" onclick="openDeadlineModal()">+ Add deadline</button>
+      </div>
+      <div class="stats-row" id="deadlines-stats"></div>
+      <div id="deadlines-list"></div>
+    </div>
+
+    <!-- ====== EVENTS: BIRTHDAYS ====== -->
+    <div id="view-events-birthdays" class="view">
+      <div class="view-header">
+        <div>
+          <div class="view-title">Birthdays</div>
+          <div class="view-subtitle">Track birthdays and countdowns</div>
+        </div>
+        <button class="btn btn-primary" onclick="openSpecialEventModal('birthday')">+ Add birthday</button>
+      </div>
+      <div class="stats-row" id="birthday-stats"></div>
+      <div id="birthday-list"></div>
+    </div>
+
+    <!-- ====== EVENTS: ANNIVERSARIES ====== -->
+    <div id="view-events-anniversaries" class="view">
+      <div class="view-header">
+        <div>
+          <div class="view-title">Anniversaries</div>
+          <div class="view-subtitle">Milestones worth remembering</div>
+        </div>
+        <button class="btn btn-primary" onclick="openSpecialEventModal('anniversary')">+ Add anniversary</button>
+      </div>
+      <div class="stats-row" id="anniversary-stats"></div>
+      <div id="anniversary-list"></div>
+    </div>
+
+    <!-- ====== EVENTS: HISTORICAL ====== -->
+    <div id="view-events-historical" class="view">
+      <div class="view-header">
+        <div>
+          <div class="view-title">Historical events</div>
+          <div class="view-subtitle">Dates that shaped history</div>
+        </div>
+        <button class="btn btn-primary" onclick="openHistoricalModal()">+ Add event</button>
+      </div>
+      <div class="stats-row" id="historical-stats"></div>
+      <div id="historical-list"></div>
+    </div>
+
+    <!-- ====== SETTINGS VIEW ====== -->
+    <div id="view-settings" class="view">
+      <div class="view-header">
+        <div>
+          <div class="view-title">Settings</div>
+          <div class="view-subtitle">Preferences and configuration</div>
+        </div>
+      </div>
+
+      <!-- Location -->
+      <div class="card" style="margin-bottom:16px;">
+        <div class="card-title">Location</div>
+        <div style="font-size:13px;color:var(--text2);margin-bottom:14px;">Used to calculate sunrise and sunset times on the daily planner.</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
+          <div class="field">
+            <label>City name</label>
+            <input type="text" id="settings-city" placeholder="e.g. Vienna, Istanbul, Tokyo…"
+              style="font-family:var(--font);font-size:14px;padding:9px 12px;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--text);outline:none;width:100%;" />
+          </div>
+          <div class="field" style="display:flex;align-items:flex-end;gap:8px;">
+            <button class="btn btn-primary" onclick="lookupCity()" style="flex:1;">Look up coordinates</button>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
+          <div class="field">
+            <label>Latitude</label>
+            <input type="number" id="settings-lat" placeholder="e.g. 48.2082" step="0.0001"
+              style="font-family:var(--font);font-size:14px;padding:9px 12px;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--text);outline:none;width:100%;" />
+          </div>
+          <div class="field">
+            <label>Longitude</label>
+            <input type="number" id="settings-lon" placeholder="e.g. 16.3738" step="0.0001"
+              style="font-family:var(--font);font-size:14px;padding:9px 12px;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--text);outline:none;width:100%;" />
+          </div>
+        </div>
+        <div id="settings-location-status" style="font-size:12px;color:var(--text3);margin-bottom:10px;min-height:16px;"></div>
+        <button class="btn btn-primary" onclick="saveLocationSettings()">Save location</button>
+      </div>
+    </div>
+
+    <!-- ====== TRAVEL VIEW ====== -->
+    <div id="view-travel" class="view">
+      <div class="view-header">
+        <div>
+          <div class="view-title">Trips</div>
+          <div class="view-subtitle">Plan and track your travels</div>
+        </div>
+        <button class="btn btn-primary" onclick="openTripModal()">+ Add trip</button>
+      </div>
+      <div class="stats-row" id="travel-stats"></div>
+      <div id="travel-list"></div>
+    </div>
+
+    <!-- ====== RECURRING VIEW ====== -->
+    <div id="view-recurring" class="view">
+      <div class="view-header">
+        <div>
+          <div class="view-title">Recurring tasks</div>
+          <div class="view-subtitle">Tasks that repeat on a schedule</div>
+        </div>
+        <button class="btn btn-primary" onclick="openTaskModal('recurring')">+ Add recurring task</button>
+      </div>
+      <div id="recurring-list"></div>
+    </div>
+
+    <!-- ====== HOLIDAYS VIEWS ====== -->
+    <div id="view-holidays-at" class="view">
+      <div class="view-header">
+        <div>
+          <div class="view-title">Holidays in Austria</div>
+          <div class="view-subtitle">Public holidays and special dates — highlighted in calendar</div>
+        </div>
+        <button class="btn btn-primary" onclick="openHolidayModal(null,'at')">+ Add holiday</button>
+      </div>
+      <div class="stats-row" id="holidays-stats-at"></div>
+      <div id="holidays-list-at"></div>
+    </div>
+
+    <div id="view-holidays-tr" class="view">
+      <div class="view-header">
+        <div>
+          <div class="view-title">Holidays in Turkey</div>
+          <div class="view-subtitle">Public holidays and special dates — highlighted in calendar</div>
+        </div>
+        <button class="btn btn-primary" onclick="openHolidayModal(null,'tr')">+ Add holiday</button>
+      </div>
+      <div class="stats-row" id="holidays-stats-tr"></div>
+      <div id="holidays-list-tr"></div>
+    </div>
+
+    <div id="view-holidays-us" class="view">
+      <div class="view-header">
+        <div>
+          <div class="view-title">Holidays in the United States</div>
+          <div class="view-subtitle">Public holidays and special dates — highlighted in calendar</div>
+        </div>
+        <button class="btn btn-primary" onclick="openHolidayModal(null,'us')">+ Add holiday</button>
+      </div>
+      <div class="stats-row" id="holidays-stats-us"></div>
+      <div id="holidays-list-us"></div>
+    </div>
+
+    <!-- ====== WEEKLY VIEW ====== -->
+    <div id="view-weekly" class="view">
+      <div class="view-header">
+        <div>
+          <div class="view-title">Weekly Overview</div>
+          <div class="view-subtitle" id="weekly-subtitle"></div>
+        </div>
+        <div class="date-nav">
+          <button onclick="shiftWeek(-1)">&#8249;</button>
+          <div class="curr-label" id="weekly-nav-label"></div>
+          <button onclick="shiftWeek(1)">&#8250;</button>
+          <button onclick="goToday()" style="font-size:12px;">This week</button>
+        </div>
+      </div>
+
+      <div class="stats-row" id="weekly-stats"></div>
+
+      <div class="week-grid" id="week-grid"></div>
+
+      <div class="card">
+        <div class="flex-between" style="margin-bottom:14px;">
+          <div class="card-title" style="margin-bottom:0;">All tasks this week</div>
+          <button class="btn btn-sm btn-primary" onclick="openTaskModal('weekly')">+ Add task</button>
+        </div>
+        <div id="weekly-tasks-list"></div>
+      </div>
+    </div>
+
+    <!-- ====== MONTHLY VIEW ====== -->
+    <div id="view-monthly" class="view">
+      <div class="view-header">
+        <div>
+          <div class="view-title">Monthly Calendar</div>
+          <div class="view-subtitle" id="monthly-subtitle"></div>
+        </div>
+        <div class="date-nav">
+          <button onclick="shiftMonth(-1)">&#8249;</button>
+          <div class="curr-label" id="monthly-nav-label"></div>
+          <button onclick="shiftMonth(1)">&#8250;</button>
+          <button onclick="goToday()" style="font-size:12px;">This month</button>
+        </div>
+      </div>
+
+      <div class="stats-row" id="monthly-stats"></div>
+      <div class="month-grid" id="month-grid"></div>
+
+      <div class="card" id="monthly-day-detail" style="display:none;">
+        <div class="flex-between" style="margin-bottom:14px;">
+          <div class="card-title" style="margin-bottom:0;" id="monthly-detail-title">Selected day</div>
+          <button class="btn btn-sm btn-primary" onclick="openTaskModal('monthly')">+ Add task</button>
+        </div>
+        <div id="monthly-day-tasks"></div>
+      </div>
+    </div>
+
+    <!-- ====== HABITS VIEW ====== -->
+    <div id="view-habits" class="view">
+      <div class="view-header">
+        <div>
+          <div class="view-title">Habits</div>
+          <div class="view-subtitle" id="habits-subtitle">Build consistency, earn achievements</div>
+        </div>
+        <div style="display:flex;gap:10px;align-items:center;">
+          <div class="date-nav">
+            <button onclick="shiftHabitWeek(-1)">&#8249;</button>
+            <div class="curr-label" id="habits-nav-label" style="min-width:140px;"></div>
+            <button onclick="shiftHabitWeek(1)">&#8250;</button>
+            <button onclick="goToday();renderHabitsView();" style="font-size:12px;">This week</button>
+          </div>
+          <button class="btn btn-primary" onclick="openHabitModal()">+ New habit</button>
+        </div>
+      </div>
+      <div id="habits-overview"></div>
+    </div>
+
+    <!-- ====== GOALS VIEW ====== -->
+    <div id="view-goals" class="view">
+      <div class="view-header">
+        <div>
+          <div class="view-title">Goals</div>
+          <div class="view-subtitle">Track your long-term objectives</div>
+        </div>
+        <button class="btn btn-primary" onclick="openGoalModal()">+ New goal</button>
+      </div>
+
+      <div class="stats-row" id="goals-stats"></div>
+
+      <div id="goals-list"></div>
+    </div>
+
+  </main>
+</div>
+
+<!-- ====== MODALS ====== -->
+
+<!-- Add Task Modal -->
+<div class="modal-overlay hidden" id="task-modal">
+  <div class="modal">
+    <div class="modal-title">Add task</div>
+    <div class="field">
+      <label>Task name</label>
+      <input type="text" id="task-name" placeholder="What needs to be done?" />
+    </div>
+    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+      <div class="field">
+        <label>Date</label>
+        <input type="date" id="task-date" />
+      </div>
+      <div class="field">
+        <label>Priority</label>
+        <select id="task-priority">
+          <option value="low">Low</option>
+          <option value="med" selected>Medium</option>
+          <option value="high">High</option>
+        </select>
+      </div>
+    </div>
+    <div class="field">
+      <label>Category</label>
+      <select id="task-category"></select>
+    </div>
+    <div class="field">
+      <label>Notes (optional)</label>
+      <textarea id="task-notes" placeholder="Additional details..."></textarea>
+    </div>
+    <div class="field">
+      <label>Repeat</label>
+      <select id="task-recur" onchange="toggleRecurOptions()">
+        <option value="none">Does not repeat</option>
+        <option value="daily">Every day</option>
+        <option value="weekly">Every week (same weekday)</option>
+        <option value="monthly-date">Monthly on this date</option>
+        <option value="monthly-day">Monthly on this weekday</option>
+        <option value="yearly">Yearly on this date</option>
+      </select>
+    </div>
+    <div id="recur-end-wrap" class="field hidden">
+      <label>End repeat (optional)</label>
+      <input type="date" id="task-recur-end" placeholder="Leave blank for no end" />
+    </div>
+    <div class="modal-actions">
+      <button class="btn" onclick="closeTaskModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveTask()">Add task</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add Time Event Modal -->
+<div class="modal-overlay hidden" id="time-modal">
+  <div class="modal">
+    <div class="modal-title">Add schedule event</div>
+    <div class="field">
+      <label>Event title</label>
+      <input type="text" id="ev-title" placeholder="Meeting, workout, lunch..." />
+    </div>
+    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+      <div class="field">
+        <label>Start time</label>
+        <div class="time-select-wrap"><select id="ev-start"></select></div>
+      </div>
+      <div class="field">
+        <label>End time</label>
+        <div class="time-select-wrap"><select id="ev-end"></select></div>
+      </div>
+    </div>
+    <div class="field">
+      <label>Category</label>
+      <select id="ev-category"></select>
+    </div>
+    <div class="field">
+      <label>Tags</label>
+      <div class="ev-tags-wrap" id="ev-tags-wrap"></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn" onclick="closeTimeModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveTimeEvent()">Add event</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add Goal Modal -->
+<div class="modal-overlay hidden" id="goal-modal">
+  <div class="modal">
+    <div class="modal-title">New goal</div>
+    <div class="field">
+      <label>Goal name</label>
+      <input type="text" id="goal-name" placeholder="e.g. Read 12 books this year" />
+    </div>
+    <div class="field">
+      <label>Description</label>
+      <textarea id="goal-desc" placeholder="Why is this goal important?"></textarea>
+    </div>
+    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+      <div class="field">
+        <label>Target value</label>
+        <input type="number" id="goal-target" placeholder="100" min="1" />
+      </div>
+      <div class="field">
+        <label>Unit</label>
+        <input type="text" id="goal-unit" placeholder="books, km, hours..." />
+      </div>
+    </div>
+    <div class="field">
+      <label>Category</label>
+      <select id="goal-category"></select>
+    </div>
+    <div class="modal-actions">
+      <button class="btn" onclick="closeGoalModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveGoal()">Create goal</button>
+    </div>
+  </div>
+</div>
+
+<!-- Update Goal Progress Modal -->
+<div class="modal-overlay hidden" id="goal-update-modal">
+  <div class="modal">
+    <div class="modal-title" id="goal-update-title">Update progress</div>
+    <div class="field">
+      <label id="goal-update-label">Current progress</label>
+      <input type="number" id="goal-update-value" min="0" />
+    </div>
+    <div class="modal-actions">
+      <button class="btn" onclick="closeGoalUpdateModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveGoalProgress()">Update</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add Habit Modal -->
+<div class="modal-overlay hidden" id="habit-modal">
+  <div class="modal">
+    <div class="modal-title">New daily habit</div>
+    <div class="field">
+      <label>Habit name</label>
+      <input type="text" id="habit-name" placeholder="e.g. Drink 3L water, Read 20 mins…" />
+    </div>
+    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+      <div class="field">
+        <label>Icon (emoji)</label>
+        <input type="text" id="habit-icon" placeholder="💧" maxlength="2" style="font-size:20px; text-align:center;" />
+      </div>
+      <div class="field">
+        <label>Colour</label>
+        <input type="color" id="habit-color" value="#3a5c7c" style="width:100%;height:40px;border-radius:8px;border:1px solid var(--border);padding:2px;cursor:pointer;" />
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn" onclick="closeHabitModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveHabit()">Add habit</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add Deadline Modal -->
+<div class="modal-overlay hidden" id="deadline-modal">
+  <div class="modal">
+    <div class="modal-title" id="dl-modal-title">Add deadline</div>
+    <div class="field">
+      <label>Title</label>
+      <input type="text" id="dl-title" placeholder="e.g. Project report, Tax return…" />
+    </div>
+    <div class="field">
+      <label>Description (optional)</label>
+      <textarea id="dl-desc" placeholder="Any extra notes…" style="min-height:56px;"></textarea>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      <div class="field">
+        <label>Due date</label>
+        <input type="date" id="dl-date" />
+      </div>
+      <div class="field">
+        <label>Due time</label>
+        <input type="time" id="dl-time" value="23:59" />
+      </div>
+    </div>
+    <div class="field">
+      <label>Priority</label>
+      <select id="dl-priority">
+        <option value="high">High</option>
+        <option value="med" selected>Medium</option>
+        <option value="low">Low</option>
+      </select>
+    </div>
+    <div class="modal-actions">
+      <button class="btn" onclick="closeDeadlineModal()">Cancel</button>
+      <button class="btn btn-primary" id="dl-save-btn" onclick="saveDeadline()">Add deadline</button>
+    </div>
+  </div>
+</div>
+
+<!-- Special Event Modal (Birthdays / Anniversaries) -->
+<div class="modal-overlay hidden" id="special-event-modal">
+  <div class="modal" style="width:460px;">
+    <div class="modal-title" id="se-modal-title">Add birthday</div>
+    <input type="hidden" id="se-type" value="birthday" />
+    <div class="field">
+      <label id="se-name-label">Person's name</label>
+      <input type="text" id="se-name" placeholder="e.g. Maria, Dad, John Smith…" />
+    </div>
+    <div class="field" id="se-desc-wrap">
+      <label id="se-desc-label">Description (optional)</label>
+      <input type="text" id="se-desc" placeholder="e.g. Wedding anniversary…" />
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      <div class="field">
+        <label id="se-date-label">Date (DD/MM/YYYY)</label>
+        <input type="text" id="se-date" placeholder="e.g. 25/12/1990" maxlength="10"
+          oninput="formatSEDate(this)"
+          style="font-variant-numeric:tabular-nums;letter-spacing:0.5px;" />
+      </div>
+      <div class="field">
+        <label>Color</label>
+        <input type="color" id="se-color" value="#e8357a"
+          style="width:100%;height:38px;border-radius:8px;border:1px solid var(--border);padding:3px;cursor:pointer;" />
+      </div>
+    </div>
+    <div class="field">
+      <label>Notes (optional)</label>
+      <input type="text" id="se-notes" placeholder="Any extra details…" />
+    </div>
+    <div class="modal-actions">
+      <button class="btn" onclick="closeSpecialEventModal()">Cancel</button>
+      <button class="btn btn-primary" id="se-save-btn" onclick="saveSpecialEvent()">Add</button>
+    </div>
+  </div>
+</div>
+
+<!-- Historical Event Modal -->
+<div class="modal-overlay hidden" id="historical-event-modal">
+  <div class="modal" style="width:500px;">
+    <div class="modal-title" id="he-modal-title">Add historical event</div>
+    <div class="field">
+      <label>Event</label>
+      <input type="text" id="he-name" placeholder="e.g. Battle of Vienna, Moon Landing…" />
+    </div>
+    <!-- Date + multi-day toggle -->
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+      <input type="checkbox" id="he-multiday" onchange="toggleHEMultiday()"
+        style="width:15px;height:15px;cursor:pointer;accent-color:var(--accent);" />
+      <label for="he-multiday" style="font-size:13px;font-weight:500;color:var(--text);cursor:pointer;margin:0;">Multi-day event</label>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 60px;gap:10px;align-items:end;">
+      <div class="field">
+        <label id="he-date1-label">Date (DD/MM/YYYY)</label>
+        <input type="text" id="he-date1" placeholder="e.g. 11/09/2001" maxlength="10"
+          oninput="formatSEDate(this)" style="font-variant-numeric:tabular-nums;letter-spacing:0.5px;" />
+      </div>
+      <div class="field hidden" id="he-date2-wrap">
+        <label>End date (DD/MM/YYYY)</label>
+        <input type="text" id="he-date2" placeholder="e.g. 14/09/2001" maxlength="10"
+          oninput="formatSEDate(this)" style="font-variant-numeric:tabular-nums;letter-spacing:0.5px;" />
+      </div>
+      <div class="field">
+        <label>Color</label>
+        <input type="color" id="he-color" value="#3a5c7c"
+          style="width:100%;height:38px;border-radius:8px;border:1px solid var(--border);padding:3px;cursor:pointer;" />
+      </div>
+    </div>
+    <div class="field">
+      <label>Part of (optional)</label>
+      <input type="text" id="he-part-of" placeholder="e.g. World War II, The Cold War, Space Race…" />
+    </div>
+    <div class="field">
+      <label>Countries involved (optional)</label>
+      <input type="text" id="he-countries" placeholder="e.g. Austria, Ottoman Empire, Poland…" />
+    </div>
+    <div class="field">
+      <label>Notes (optional)</label>
+      <input type="text" id="he-notes" placeholder="Any extra details…" />
+    </div>
+    <div class="modal-actions">
+      <button class="btn" onclick="closeHistoricalModal()">Cancel</button>
+      <button class="btn btn-primary" id="he-save-btn" onclick="saveHistoricalEvent()">Add event</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add/Edit Trip Modal -->
+<div class="modal-overlay hidden" id="trip-modal">
+  <div class="modal" style="width:560px;max-height:90vh;overflow-y:auto;">
+    <div class="modal-title" id="trip-modal-title">Add trip</div>
+
+    <!-- Basic info -->
+    <div class="field">
+      <label>Trip name</label>
+      <input type="text" id="trip-name" placeholder="e.g. Summer in Italy, Business trip to Berlin…" />
+    </div>
+    <div class="field">
+      <label>Destination(s)</label>
+      <input type="text" id="trip-dest" placeholder="e.g. Rome, Florence, Venice" />
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 60px;gap:10px;align-items:end;">
+      <div class="field">
+        <label>Trip start date</label>
+        <input type="date" id="trip-start" />
+      </div>
+      <div class="field">
+        <label>Trip end date</label>
+        <input type="date" id="trip-end" />
+      </div>
+      <div class="field">
+        <label>Color</label>
+        <input type="color" id="trip-color" value="#6b4a8a"
+          style="width:100%;height:38px;border-radius:8px;border:1px solid var(--border);padding:3px;cursor:pointer;" />
+      </div>
+    </div>
+
+    <!-- Journey timeline -->
+    <div style="margin-top:6px;margin-bottom:12px;">
+      <div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;">
+        <span>Journey timeline</span>
+        <div style="display:flex;gap:6px;">
+          <button class="btn btn-sm" onclick="addTripLeg()" type="button">+ Add leg</button>
+          <button class="btn btn-sm" onclick="addLodgingLeg()" type="button" style="background:var(--purple-light);color:var(--purple);border-color:var(--purple);">Add lodging</button>
+        </div>
+      </div>
+      <div id="trip-legs-container"></div>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn" onclick="closeTripModal()">Cancel</button>
+      <button class="btn btn-primary" id="trip-save-btn" onclick="saveTrip()">Add trip</button>
+    </div>
+  </div>
+</div>
+
+<!-- GitHub Sync Modal -->
+<div class="modal-overlay hidden" id="github-modal">
+  <div class="modal" style="width:520px;">
+    <div class="modal-title">GitHub Gist Sync</div>
+
+    <div style="background:var(--blue-light);border:1px solid var(--blue);border-radius:8px;padding:12px 14px;margin-bottom:16px;font-size:12px;color:var(--text2);line-height:1.6;">
+      <strong style="color:var(--text);">How to set up:</strong><br>
+      1. Go to <strong>github.com → Settings → Developer settings → Personal access tokens → Tokens (classic)</strong><br>
+      2. Click <strong>Generate new token</strong>, give it a name, select the <strong>gist</strong> scope only<br>
+      3. Copy the token and paste it below — it's stored only in your browser
+    </div>
+
+    <div class="field">
+      <label>GitHub Personal Access Token</label>
+      <div style="display:flex;gap:8px;">
+        <input type="password" id="gh-token" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx"
+          style="flex:1;font-family:var(--font);font-size:13px;padding:9px 12px;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--text);outline:none;" />
+        <button class="btn btn-sm" onclick="toggleGhTokenVisibility()" id="gh-token-eye" style="flex-shrink:0;">Show</button>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Gist ID <span style="font-weight:400;color:var(--text3);">(auto-filled after first push)</span></label>
+      <input type="text" id="gh-gist-id" placeholder="Leave blank to create a new Gist on first push"
+        style="font-family:var(--font);font-size:13px;padding:9px 12px;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--text);outline:none;width:100%;" />
+    </div>
+
+    <div id="gh-status" style="font-size:12px;color:var(--text3);margin-bottom:12px;min-height:18px;"></div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;">
+      <button class="btn btn-primary" onclick="githubPush()" id="gh-push-btn">
+        Push to GitHub ↑
+      </button>
+      <button class="btn" onclick="githubPull()" id="gh-pull-btn">
+        Pull from GitHub ↓
+      </button>
+    </div>
+
+    <div style="font-size:11px;color:var(--text3);margin-bottom:14px;">
+      <strong>Push</strong> — saves your current data to GitHub (overwrites remote)<br>
+      <strong>Pull</strong> — loads data from GitHub into this planner (overwrites local)
+    </div>
+
+    <div class="modal-actions" style="margin-top:0;">
+      <button class="btn" onclick="closeGitHubSync()">Close</button>
+      <button class="btn btn-primary" onclick="saveGhSettings()">Save settings</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add Holiday Modal -->
+<div class="modal-overlay hidden" id="holiday-modal">
+  <div class="modal" style="width:460px;">
+    <div class="modal-title" id="holiday-modal-title">Add holiday</div>
+    <input type="hidden" id="hol-country" value="at" />
+
+    <div class="field">
+      <label>International name</label>
+      <input type="text" id="hol-name" placeholder="e.g. Christmas Day, New Year's Day…" />
+    </div>
+    <div class="field">
+      <label>Native name <span style="font-weight:400;color:var(--text3);">(optional)</span></label>
+      <input type="text" id="hol-native-name" placeholder="e.g. Weihnachten, Noel, Novruz…" />
+    </div>
+
+    <!-- Date type selector -->
+    <div class="field">
+      <label>Date type</label>
+      <select id="hol-date-type" onchange="updateHolDateType()">
+        <option value="fixed">Fixed date (e.g. 25 Dec)</option>
+        <option value="weekday">Nth weekday of month (e.g. 1st Monday of May)</option>
+        <option value="offset">X days after another holiday</option>
+      </select>
+    </div>
+
+    <!-- Fixed date fields -->
+    <div id="hol-fixed-wrap">
+      <!-- Multi-day toggle -->
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+        <input type="checkbox" id="hol-multiday" onchange="toggleHolMultiday()"
+          style="width:16px;height:16px;cursor:pointer;accent-color:var(--accent);" />
+        <label for="hol-multiday" style="font-size:13px;font-weight:500;color:var(--text);cursor:pointer;margin:0;">
+          Multi-day holiday (date range)
+        </label>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;" id="hol-date-row">
+        <div class="field">
+          <label>Start date</label>
+          <input type="date" id="hol-date" />
+        </div>
+        <div class="field hidden" id="hol-enddate-wrap">
+          <label>End date</label>
+          <input type="date" id="hol-date-end" />
+        </div>
+        <div class="field">
+          <label>Color</label>
+          <input type="color" id="hol-color" value="#6b7c93"
+            style="width:100%;height:38px;border-radius:8px;border:1px solid var(--border);padding:3px;cursor:pointer;" />
+        </div>
+      </div>
+    </div>
+
+    <!-- Nth weekday fields -->
+    <div id="hol-weekday-wrap" class="hidden">
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">
+        <div class="field">
+          <label>Occurrence</label>
+          <select id="hol-nth">
+            <option value="1">1st</option>
+            <option value="2">2nd</option>
+            <option value="3">3rd</option>
+            <option value="4">4th</option>
+            <option value="-1">Last</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Weekday</label>
+          <select id="hol-weekday">
+            <option value="1">Monday</option>
+            <option value="2">Tuesday</option>
+            <option value="3">Wednesday</option>
+            <option value="4">Thursday</option>
+            <option value="5">Friday</option>
+            <option value="6">Saturday</option>
+            <option value="0">Sunday</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Month</label>
+          <select id="hol-month">
+            <option value="0">January</option><option value="1">February</option>
+            <option value="2">March</option><option value="3">April</option>
+            <option value="4">May</option><option value="5">June</option>
+            <option value="6">July</option><option value="7">August</option>
+            <option value="8">September</option><option value="9">October</option>
+            <option value="10">November</option><option value="11">December</option>
+          </select>
+        </div>
+      </div>
+      <div class="field" style="margin-top:4px;">
+        <label>Color</label>
+        <input type="color" id="hol-color-wd" value="#6b7c93"
+          style="width:60px;height:34px;border-radius:8px;border:1px solid var(--border);padding:2px;cursor:pointer;" />
+      </div>
+    </div>
+
+    <!-- Offset fields -->
+    <div id="hol-offset-wrap" class="hidden">
+      <div style="display:grid;grid-template-columns:80px 1fr;gap:10px;align-items:end;">
+        <div class="field">
+          <label>Days after</label>
+          <input type="number" id="hol-offset-days" value="1" min="1" max="365"
+            style="font-family:var(--font);font-size:14px;padding:9px 12px;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--text);outline:none;width:100%;" />
+        </div>
+        <div class="field">
+          <label>Base holiday</label>
+          <select id="hol-offset-base"></select>
+        </div>
+      </div>
+      <div class="field" style="margin-top:4px;">
+        <label>Color</label>
+        <input type="color" id="hol-color-off" value="#6b7c93"
+          style="width:60px;height:34px;border-radius:8px;border:1px solid var(--border);padding:2px;cursor:pointer;" />
+      </div>
+    </div>
+
+    <div class="field" style="margin-top:4px;">
+      <label>Notes (optional)</label>
+      <input type="text" id="hol-notes" placeholder="Any extra info…" />
+    </div>
+    <div class="field">
+      <label>Repeat</label>
+      <select id="hol-recur">
+        <option value="none">Does not repeat</option>
+        <option value="yearly">Every year</option>
+      </select>
+    </div>
+    <div class="modal-actions">
+      <button class="btn" onclick="closeHolidayModal()">Cancel</button>
+      <button class="btn btn-primary" id="hol-save-btn" onclick="saveHoliday()">Add holiday</button>
+    </div>
+  </div>
+</div>
+
+<!-- Category Manager Modal -->
+<div class="modal-overlay hidden" id="cat-modal">
+  <div class="modal" style="width:500px;">
+    <div class="modal-title">Categories &amp; Tags</div>
+
+    <!-- Categories -->
+    <div style="font-size:11px;font-weight:600;letter-spacing:0.6px;text-transform:uppercase;color:var(--text3);margin-bottom:8px;">Categories</div>
+    <div class="cat-list" id="cat-list"></div>
+    <div class="cat-add-row" style="margin-bottom:20px;">
+      <input type="color" id="cat-color" value="#3a5c7c" style="width:34px;height:34px;border-radius:8px;border:1px solid var(--border);padding:2px;cursor:pointer;flex-shrink:0;" />
+      <input type="text" id="cat-name-input" placeholder="New category name…"
+        style="flex:1;font-family:var(--font);font-size:13px;padding:8px 12px;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--text);outline:none;" />
+      <button class="btn btn-primary btn-sm" onclick="addCategory()">Add</button>
+    </div>
+
+    <!-- Tags -->
+    <div style="font-size:11px;font-weight:600;letter-spacing:0.6px;text-transform:uppercase;color:var(--text3);margin-bottom:8px;">Event Tags</div>
+    <div class="cat-list" id="tag-list"></div>
+    <div class="cat-add-row">
+      <input type="color" id="tag-color" value="#c94a3a" style="width:34px;height:34px;border-radius:8px;border:1px solid var(--border);padding:2px;cursor:pointer;flex-shrink:0;" />
+      <input type="text" id="tag-name-input" placeholder="New tag name…"
+        style="flex:1;font-family:var(--font);font-size:13px;padding:8px 12px;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--text);outline:none;" />
+      <button class="btn btn-primary btn-sm" onclick="addTag()">Add</button>
+    </div>
+
+    <div class="modal-actions" style="margin-top:20px;">
+      <button class="btn btn-primary" onclick="closeCategoryModal()">Done</button>
+    </div>
+  </div>
+</div>
+
+<script type="module" src="/src/main.js"></script>
+</body>
+</html>
