@@ -45,7 +45,7 @@ export function renderWeekly() {
   });
 
   const totalH = (CAL_END - CAL_START) * SLOT_H;
-  const hours  = Array.from({ length: CAL_END - CAL_START }, (_, i) => CAL_START + i);
+  const hours  = Array.from({ length: CAL_END - CAL_START + 1 }, (_, i) => CAL_START + i);
 
   // ---- Day header row ----
   const headerHtml = `
@@ -88,16 +88,20 @@ export function renderWeekly() {
     </div>`;
 
   // ---- Time grid ----
-  const hourLabelsHtml = hours.map(h => {
-    const label = h === 0 ? '12am' : h < 12 ? `${h}am` : h === 12 ? '12pm' : `${h - 12}pm`;
-    return `<div class="wcal-hour-label" style="height:${SLOT_H}px;">${label}</div>`;
-  }).join('');
+  // Labels are absolutely positioned so each sits exactly ON its grid line
+  const hourLabelsHtml =
+    `<div style="position:relative;height:${totalH}px;">` +
+    hours.map(h => {
+      const label = h === 0 ? '12am' : h < 12 ? `${h}am` : h === 12 ? '12pm' : h === 24 ? '' : `${h - 12}pm`;
+      const top   = (h - CAL_START) * SLOT_H;
+      return `<div class="wcal-hour-label" style="position:absolute;top:${top}px;transform:translateY(-50%);">${label}</div>`;
+    }).join('') +
+    `</div>`;
 
-  // One line per hour + a final bottom border line
+  // One line per hour boundary (25 lines for 24 slots, incl. top and bottom)
   const hourLinesHtml = hours.map(h =>
     `<div class="wcal-hour-line" style="top:${(h - CAL_START) * SLOT_H}px;"></div>`
-  ).join('') +
-  `<div class="wcal-hour-line" style="top:${totalH}px;"></div>`;
+  ).join('');
 
   const dayColumnsHtml = days.map(({ ds, events, d }) => {
     const isWeekend = d.getDay() === 0 || d.getDay() === 6;
@@ -132,7 +136,7 @@ export function renderWeekly() {
   // Grid height is exact — scrollable wrapper sits outside
   const gridHtml = `
     <div class="wcal-grid-scroll">
-      <div class="wcal-grid" style="height:${totalH + 1}px;">
+      <div class="wcal-grid" style="height:${totalH}px;">
         <div class="wcal-hour-labels">${hourLabelsHtml}</div>
         <div class="wcal-grid-inner">
           ${hourLinesHtml}
