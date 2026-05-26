@@ -12,6 +12,18 @@ export const DAY_NAMES   = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursda
 export const MONTH_NAMES = ['January', 'February', 'March', 'April', 'May', 'June',
                              'July', 'August', 'September', 'October', 'November', 'December'];
 
+export const HOL_TYPE_LABELS = {
+  international: 'International holiday',
+  national:      'National holiday',
+  religious:     'Religious holiday',
+};
+
+export const HOL_TYPE_COLORS = {
+  international: '#e0ffff',
+  national:      '#ffe8e8',
+  religious:     '#ccffcc',
+};
+
 let editingHolidayId = null;
 
 // ---- Data helpers ----
@@ -84,6 +96,8 @@ export function holidayForDate(ds) {
 export function toggleHolMultiday() {
   const checked = document.getElementById('hol-multiday').checked;
   document.getElementById('hol-enddate-wrap').classList.toggle('hidden', !checked);
+  const label = document.getElementById('hol-date-label');
+  if (label) label.textContent = checked ? 'Start date' : 'Date';
 }
 
 export function updateHolDateType() {
@@ -131,6 +145,13 @@ export function openHolidayModal(id, country) {
 
   populateOffsetBaseSelect(id);
 
+  // Wire type → auto-color (no manual color pickers anymore)
+  const typeEl = document.getElementById('hol-type');
+
+  // Reset date label
+  const dateLabel = document.getElementById('hol-date-label');
+  if (dateLabel) dateLabel.textContent = 'Date';
+
   if (isEdit) {
     const h = (state.holidays || []).find(h => h.id === id);
     if (!h) return;
@@ -140,22 +161,22 @@ export function openHolidayModal(id, country) {
     document.getElementById('hol-date-type').value   = dtype;
     document.getElementById('hol-notes').value       = h.notes || '';
     document.getElementById('hol-recur').value       = h.recur || 'none';
+    if (typeEl) typeEl.value = h.holType || '';
     if (dtype === 'fixed') {
       const isMulti = !!(h.dateEnd);
       document.getElementById('hol-date').value         = h.date || '';
-      document.getElementById('hol-color').value        = h.color || '#6b7c93';
       document.getElementById('hol-multiday').checked   = isMulti;
       document.getElementById('hol-date-end').value     = h.dateEnd || '';
       document.getElementById('hol-enddate-wrap').classList.toggle('hidden', !isMulti);
+      if (isMulti && dateLabel) dateLabel.textContent = 'Start date';
     } else if (dtype === 'weekday') {
       document.getElementById('hol-nth').value      = h.nth || '1';
       document.getElementById('hol-weekday').value  = h.weekday || '1';
       document.getElementById('hol-month').value    = h.holMonth || '0';
-      document.getElementById('hol-color-wd').value = h.color || '#6b7c93';
     } else if (dtype === 'offset') {
       document.getElementById('hol-offset-days').value = h.offsetDays || '1';
       document.getElementById('hol-offset-base').value = h.offsetBaseId || '';
-      document.getElementById('hol-color-off').value   = h.color || '#6b7c93';
+      document.getElementById('hol-offset-base').value = h.offsetBaseId || '';
     }
   } else {
     document.getElementById('hol-name').value         = '';
@@ -165,15 +186,13 @@ export function openHolidayModal(id, country) {
     document.getElementById('hol-date-end').value     = '';
     document.getElementById('hol-multiday').checked   = false;
     document.getElementById('hol-enddate-wrap').classList.add('hidden');
-    document.getElementById('hol-color').value        = '#6b7c93';
-    document.getElementById('hol-color-wd').value     = '#6b7c93';
-    document.getElementById('hol-color-off').value    = '#6b7c93';
     document.getElementById('hol-nth').value          = '1';
     document.getElementById('hol-weekday').value      = '1';
     document.getElementById('hol-month').value        = '0';
     document.getElementById('hol-offset-days').value  = '1';
     document.getElementById('hol-notes').value        = '';
     document.getElementById('hol-recur').value        = 'none';
+    if (typeEl) typeEl.value = '';
   }
   updateHolDateType();
   document.getElementById('holiday-modal').classList.remove('hidden');
@@ -195,14 +214,15 @@ export function saveHoliday() {
   const dtype      = document.getElementById('hol-date-type').value;
   const notes      = document.getElementById('hol-notes').value.trim();
   const nativeName = document.getElementById('hol-native-name').value.trim();
+  const holType    = document.getElementById('hol-type')?.value || '';
+  const color      = HOL_TYPE_COLORS[holType] || '#6b7c93';
 
-  let entry = { id: editingHolidayId || uid(), name, nativeName, recur, country, notes, dateType: dtype };
+  let entry = { id: editingHolidayId || uid(), name, nativeName, recur, country, notes, holType, color, dateType: dtype };
 
   if (dtype === 'fixed') {
     const date = document.getElementById('hol-date').value;
     if (!date) return;
     entry.date  = date;
-    entry.color = document.getElementById('hol-color').value;
     const isMulti = document.getElementById('hol-multiday').checked;
     entry.dateEnd  = isMulti ? (document.getElementById('hol-date-end').value || date) : null;
     entry.multiDay = isMulti;
@@ -210,12 +230,10 @@ export function saveHoliday() {
     entry.nth      = document.getElementById('hol-nth').value;
     entry.weekday  = document.getElementById('hol-weekday').value;
     entry.holMonth = document.getElementById('hol-month').value;
-    entry.color    = document.getElementById('hol-color-wd').value;
     entry.date     = resolveHolidayDate(entry, new Date().getFullYear()) || '';
   } else if (dtype === 'offset') {
     entry.offsetDays   = document.getElementById('hol-offset-days').value;
     entry.offsetBaseId = document.getElementById('hol-offset-base').value;
-    entry.color        = document.getElementById('hol-color-off').value;
     entry.date         = resolveHolidayDate(entry, new Date().getFullYear()) || '';
   }
 
@@ -294,6 +312,9 @@ export function renderHolidaysForCountry(country) {
         const ruleBadge  = ruleDesc
           ? '<span class="recur-badge" style="margin-left:6px;background:var(--accent-light);color:var(--accent-text);">' + ruleDesc + '</span>'
           : '';
+        const typeBadge  = h.holType && HOL_TYPE_LABELS[h.holType]
+          ? '<span class="recur-badge" style="margin-left:6px;background:' + HOL_TYPE_COLORS[h.holType] + ';color:#333;">' + HOL_TYPE_LABELS[h.holType] + '</span>'
+          : '';
 
         // Countdown
         const today = new Date(); today.setHours(0, 0, 0, 0);
@@ -326,7 +347,7 @@ export function renderHolidaysForCountry(country) {
           '<div class="hol-body">' +
             '<div class="hol-title">' + h.name +
             (h.nativeName ? ' <span style="font-size:12px;font-weight:400;color:var(--text3);">· ' + h.nativeName + '</span>' : '') +
-            recurBadge + ruleBadge + '</div>' +
+            recurBadge + ruleBadge + typeBadge + '</div>' +
             '<div class="hol-meta">' + dateStr + (h.notes ? ' · ' + h.notes : '') + '</div>' +
           '</div>' +
           countdownHtml +

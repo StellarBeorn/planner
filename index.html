@@ -857,6 +857,17 @@
       </select>
     </div>
 
+    <!-- Holiday type -->
+    <div class="field">
+      <label>Holiday type</label>
+      <select id="hol-type">
+        <option value="">— Select type —</option>
+        <option value="international">International holiday</option>
+        <option value="national">National holiday</option>
+        <option value="religious">Religious holiday</option>
+      </select>
+    </div>
+
     <!-- Fixed date fields -->
     <div id="hol-fixed-wrap">
       <!-- Multi-day toggle -->
@@ -867,19 +878,14 @@
           Multi-day holiday (date range)
         </label>
       </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;" id="hol-date-row">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;" id="hol-date-row">
         <div class="field">
-          <label>Start date</label>
+          <label id="hol-date-label">Date</label>
           <input type="date" id="hol-date" />
         </div>
         <div class="field hidden" id="hol-enddate-wrap">
           <label>End date</label>
           <input type="date" id="hol-date-end" />
-        </div>
-        <div class="field">
-          <label>Color</label>
-          <input type="color" id="hol-color" value="#6b7c93"
-            style="width:100%;height:38px;border-radius:8px;border:1px solid var(--border);padding:3px;cursor:pointer;" />
         </div>
       </div>
     </div>
@@ -921,11 +927,6 @@
           </select>
         </div>
       </div>
-      <div class="field" style="margin-top:4px;">
-        <label>Color</label>
-        <input type="color" id="hol-color-wd" value="#6b7c93"
-          style="width:60px;height:34px;border-radius:8px;border:1px solid var(--border);padding:2px;cursor:pointer;" />
-      </div>
     </div>
 
     <!-- Offset fields -->
@@ -941,16 +942,11 @@
           <select id="hol-offset-base"></select>
         </div>
       </div>
-      <div class="field" style="margin-top:4px;">
-        <label>Color</label>
-        <input type="color" id="hol-color-off" value="#6b7c93"
-          style="width:60px;height:34px;border-radius:8px;border:1px solid var(--border);padding:2px;cursor:pointer;" />
-      </div>
     </div>
 
     <div class="field" style="margin-top:4px;">
-      <label>Notes (optional)</label>
-      <input type="text" id="hol-notes" placeholder="Any extra info…" />
+      <label>Commemorates (optional)</label>
+      <input type="text" id="hol-notes" placeholder="What does this holiday commemorate?" />
     </div>
     <div class="field">
       <label>Repeat</label>
