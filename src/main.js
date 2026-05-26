@@ -86,6 +86,7 @@ import {
   resolveHolidayDate, getHolidaysByCountry,
   openHolidayModal, closeHolidayModal, saveHoliday, deleteHoliday,
   updateHolDateType, toggleHolMultiday, formatSEDate,
+  HOL_TYPE_LABELS, HOL_TYPE_COLORS,
 } from './views/holidays.js';
 
 import {
@@ -249,6 +250,7 @@ Object.assign(window, {
   resolveHolidayDate, getHolidaysByCountry,
   openHolidayModal, closeHolidayModal, saveHoliday, deleteHoliday,
   updateHolDateType, toggleHolMultiday, formatSEDate,
+  HOL_TYPE_LABELS, HOL_TYPE_COLORS,
 
   // Travel
   renderTravel, tripStatus, tripCountdown,

@@ -512,6 +512,9 @@ export function renderDaily() {
   window.renderGym?.(ds);
   window.renderCheatDay?.(ds);
   window.renderDeadlinesMini?.();
+  renderDailyBirthdays(ds);
+  renderDailyHolidays(ds);
+  renderDailyHistorical(ds);
 
   requestAnimationFrame(() => {
     const rightCol = document.querySelector('#view-daily .grid-right-col');
@@ -524,4 +527,141 @@ export function renderDaily() {
   });
 
   window.renderGoalsMini?.();
+}
+
+// ---- Daily birthdays widget ----
+function renderDailyBirthdays(ds) {
+  const el = document.getElementById('daily-birthdays-list');
+  if (!el) return;
+  const [, mStr, dStr] = ds.split('-');
+  const m = parseInt(mStr), d = parseInt(dStr);
+  const thisYear = new Date().getFullYear();
+
+  const hits = (state.specialEvents || []).filter(ev => {
+    if (ev.type !== 'birthday') return false;
+    const evM = ev.m;
+    const evD = ev.d;
+    return evM === m && evD === d;
+  });
+
+  const card = document.getElementById('daily-birthdays-card');
+  if (card) card.style.display = hits.length ? '' : 'none';
+  if (!hits.length) { el.innerHTML = ''; return; }
+
+  el.innerHTML = hits.map(ev => {
+    const age = ev.y ? (thisYear - ev.y) : null;
+    return `<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);">
+      <span style="font-size:22px;">🎂</span>
+      <div>
+        <div style="font-size:14px;font-weight:600;color:var(--text);">${ev.name}</div>
+        ${age ? `<div style="font-size:12px;color:var(--text3);">Turns ${age} today</div>` : ''}
+        ${ev.notes ? `<div style="font-size:12px;color:var(--text3);">${ev.notes}</div>` : ''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ---- Daily holidays widget ----
+function renderDailyHolidays(ds) {
+  const el = document.getElementById('daily-holidays-list');
+  if (!el) return;
+
+  // Collect holidays from all countries for today
+  const year = parseInt(ds.split('-')[0]);
+  const hits = [];
+  (state.holidays || []).forEach(h => {
+    const resolved = window.resolveHolidayDate ? window.resolveHolidayDate(h, year) : null;
+    if (!resolved) return;
+    let matches = false;
+    if (h.multiDay && h.dateEnd && h.dateType === 'fixed') {
+      let start = resolved, end = h.dateEnd;
+      if (h.recur === 'yearly') {
+        const [, sm, sd] = h.date.split('-');
+        const [, em, ed] = h.dateEnd.split('-');
+        start = year + '-' + sm + '-' + sd;
+        end   = year + '-' + em + '-' + ed;
+      }
+      matches = ds >= start && ds <= end;
+    } else {
+      matches = resolved === ds;
+    }
+    if (matches) hits.push(h);
+  });
+
+  const card = document.getElementById('daily-holidays-card');
+  if (card) card.style.display = hits.length ? '' : 'none';
+  if (!hits.length) { el.innerHTML = ''; return; }
+
+  const { HOL_TYPE_LABELS, HOL_TYPE_COLORS } = window;
+
+  el.innerHTML = hits.map(h => {
+    const typeLabel = HOL_TYPE_LABELS && h.holType ? HOL_TYPE_LABELS[h.holType] : null;
+    const typeColor = HOL_TYPE_COLORS && h.holType ? HOL_TYPE_COLORS[h.holType] : h.color;
+    return `<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);">
+      <div style="width:10px;height:10px;border-radius:50%;background:${h.color};flex-shrink:0;"></div>
+      <div style="flex:1;min-width:0;">
+        <div style="font-size:14px;font-weight:600;color:var(--text);">${h.name}
+          ${h.nativeName ? `<span style="font-size:12px;font-weight:400;color:var(--text3);">· ${h.nativeName}</span>` : ''}
+        </div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:3px;">
+          ${typeLabel ? `<span style="font-size:10px;font-weight:600;padding:1px 7px;border-radius:99px;background:${typeColor};color:#333;">${typeLabel}</span>` : ''}
+          <span style="font-size:11px;color:var(--text3);">${h.country ? h.country.toUpperCase() : ''}</span>
+        </div>
+        ${h.notes ? `<div style="font-size:12px;color:var(--text3);margin-top:2px;">${h.notes}</div>` : ''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ---- Daily historical events widget ----
+function renderDailyHistorical(ds) {
+  const el = document.getElementById('daily-historical-list');
+  if (!el) return;
+  const [yStr, mStr, dStr] = ds.split('-');
+  const m = parseInt(mStr), d = parseInt(dStr);
+  const thisYear = parseInt(yStr);
+
+  const hits = (state.specialEvents || []).filter(ev => {
+    if (ev.type !== 'historical') return false;
+    if (!ev.multiDay || !ev.m2 || !ev.d2) {
+      // Single day — match by month and day only (any year)
+      return ev.m === m && ev.d === d;
+    }
+    // Multi-day — build date strings using the event's original year for comparison
+    const evYear   = ev.y || thisYear;
+    const startDs  = evYear + '-' + String(ev.m).padStart(2,'0') + '-' + String(ev.d).padStart(2,'0');
+    // End date may be a different year (e.g. event spanning Dec→Jan)
+    const endYear  = ev.y2 || (ev.m2 < ev.m ? evYear + 1 : evYear);
+    const endDs    = endYear + '-' + String(ev.m2).padStart(2,'0') + '-' + String(ev.d2).padStart(2,'0');
+    // Compare day-of-year using month/day only (ignore year)
+    const todayMD  = mStr + '-' + dStr;
+    const startMD  = String(ev.m).padStart(2,'0') + '-' + String(ev.d).padStart(2,'0');
+    const endMD    = String(ev.m2).padStart(2,'0') + '-' + String(ev.d2).padStart(2,'0');
+    if (startMD <= endMD) {
+      return todayMD >= startMD && todayMD <= endMD;
+    } else {
+      // Spans year boundary (e.g. Dec–Jan)
+      return todayMD >= startMD || todayMD <= endMD;
+    }
+  });
+
+  const card = document.getElementById('daily-historical-card');
+  if (card) card.style.display = hits.length ? '' : 'none';
+  if (!hits.length) { el.innerHTML = ''; return; }
+
+  el.innerHTML = hits.map(ev => {
+    const yearStr  = ev.y ? String(ev.y) : '';
+    const yearsAgo = ev.y ? (thisYear - ev.y) : null;
+    return `<div style="display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);">
+      <div style="width:3px;border-radius:99px;align-self:stretch;min-height:36px;background:${ev.color || 'var(--blue)'};flex-shrink:0;"></div>
+      <div>
+        <div style="font-size:14px;font-weight:600;color:var(--text);">${ev.name}</div>
+        <div style="font-size:12px;color:var(--text3);margin-top:2px;">
+          ${yearStr ? yearStr + (yearsAgo ? ` · ${yearsAgo} years ago` : '') : ''}
+          ${ev.partOf ? ` · ${ev.partOf}` : ''}
+        </div>
+        ${ev.notes ? `<div style="font-size:12px;color:var(--text3);">${ev.notes}</div>` : ''}
+      </div>
+    </div>`;
+  }).join('');
 }
